@@ -5,7 +5,7 @@ import Dashboard from '../pages/Dashboard.jsx';
 // Extract StatCard component from the Dashboard component's source
 const StatCard = ({ title, value, trend, icon, chartData = [], colorClass }) => {
     const formattedChartData = chartData.map((val, index) => ({
-        name: Day ${index + 1},
+        name: `Day ${index + 1}`,
         value: val
     }));
 
@@ -15,9 +15,9 @@ const StatCard = ({ title, value, trend, icon, chartData = [], colorClass }) => 
                 <div>
                     <p className="text-sm text-text-secondary font-medium">{title}</p>
                     <p className="text-3xl font-bold text-text-primary">{value}</p>
-                    <p className={text-xs font-semibold ${trend.startsWith('+') || trend.startsWith('Tracking') || trend.startsWith('Great') || trend === 'Stable' || trend.includes('suggestion') ? 'text-green-500' : (trend === 'N/A' || trend === 'Coming Soon' || trend === 'No suggestions' ? 'text-gray-500' : 'text-red-500')}}>{trend}</p>
+                    <p className={`text-xs font-semibold ${trend.startsWith('+') || trend.startsWith('Tracking') || trend.startsWith('Great') || trend === 'Stable' || trend.includes('suggestion') ? 'text-green-500' : (trend === 'N/A' || trend === 'Coming Soon' || trend === 'No suggestions' ? 'text-gray-500' : 'text-red-500')}`}>{trend}</p>
                 </div>
-                <div className={text-2xl p-3 rounded-full ${colorClass}}>{icon}</div>
+                <div className={`text-2xl p-3 rounded-full ${colorClass}`}>{icon}</div>
             </div>
             <div className="h-16 w-full mt-auto">
                 {formattedChartData.length > 0 ? (
@@ -81,5 +81,5 @@ describe('StatCard Component', () => {
     const { container } = render(<StatCard {...defaultProps} colorClass="bg-blue-100 text-blue-600" />);
     const iconContainer = container.querySelector('.bg-blue-100');
     expect(iconContainer).toBeInTheDocument();
-  });
+  });
 });

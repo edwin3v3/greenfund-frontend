@@ -6,47 +6,47 @@ A modern React-based frontend application for managing and monitoring agricultur
 
 ### 1. Interactive Dashboard (📊)
 
-- *Farm Activity Monitoring*
+- **Farm Activity Monitoring**
   - Real-time activity feed with timestamp and status indicators
   - Visual activity icons and color-coded status
   - Automatic time-based updates using date-fns
-- *Emissions Tracking*
+- **Emissions Tracking**
 
   - Weekly CO2 emissions visualization
   - Daily emissions trend analysis
   - Interactive line charts with tooltips
   - Trend indicators (Increasing/Decreasing/Stable)
 
-- *AI Crop Suggestions*
+- **AI Crop Suggestions**
 
   - Smart crop recommendations based on soil data
   - Unique suggestion counter
   - Historical suggestion tracking
   - Integration with soil analysis data
 
-- *Achievement System*
+- **Achievement System**
   - Gamified farming achievements
   - Progress tracking
   - Badge collection system
   - Motivational feedback
 
-### 2. Farm Management (🗺)
+### 2. Farm Management (🗺️)
 
-- *Farm Registry*
+- **Farm Registry**
 
   - Add and manage multiple farm properties
   - Property size and type tracking
   - Farm location mapping
   - Historical data tracking
 
-- *Interactive Mapping*
+- **Interactive Mapping**
 
   - Leaflet-based interactive maps
   - Farm boundary visualization
   - Location markers with details
   - Satellite view integration
 
-- *Soil Analysis*
+- **Soil Analysis**
   - Soil data upload and processing
   - Health tracking over time
   - Results visualization
@@ -54,14 +54,14 @@ A modern React-based frontend application for managing and monitoring agricultur
 
 ### 3. Community Features (👥)
 
-- *Farmer Forum*
+- **Farmer Forum**
 
   - Discussion threads
   - Knowledge sharing platform
   - Expert advice section
   - Community support
 
-- *Chat Support*
+- **Chat Support**
   - Real-time chat functionality
   - AI-powered chatbot
   - Expert connection system
@@ -69,14 +69,14 @@ A modern React-based frontend application for managing and monitoring agricultur
 
 ### 4. User Interface (📱)
 
-- *Responsive Design*
+- **Responsive Design**
 
   - Mobile-first approach
   - Adaptive layouts
   - Touch-friendly interface
   - Cross-device compatibility
 
-- *Interactive Elements*
+- **Interactive Elements**
   - Smooth Framer Motion animations
   - Interactive Recharts visualizations
   - Toast notifications system
@@ -84,14 +84,14 @@ A modern React-based frontend application for managing and monitoring agricultur
 
 ### 5. Environmental Impact (🌍)
 
-- *Emissions Monitoring*
+- **Emissions Monitoring**
 
   - CO2 emission calculations
   - Environmental impact scoring
   - Sustainability metrics
   - Improvement suggestions
 
-- *Sustainability Features*
+- **Sustainability Features**
   - Eco-friendly practice recommendations
   - Resource usage tracking
   - Environmental achievement badges
@@ -99,14 +99,14 @@ A modern React-based frontend application for managing and monitoring agricultur
 
 ### 6. Data Analytics (📈)
 
-- *Performance Metrics*
+- **Performance Metrics**
 
   - Farm productivity analysis
   - Resource utilization stats
   - Comparative benchmarking
   - Trend analysis
 
-- *Reporting*
+- **Reporting**
   - Custom report generation
   - Data export capabilities
   - Visual data summaries
@@ -114,18 +114,18 @@ A modern React-based frontend application for managing and monitoring agricultur
 
 ## Tech Stack
 
-- *Framework:* React 18
-- *Build Tool:* Vite
-- *Routing:* React Router DOM v6
-- *Styling:* TailwindCSS
-- *State Management:* React Context
-- *API Integration:* Axios
-- *Testing:* Jest + React Testing Library
-- *Data Visualization:* Recharts
-- *Maps:* React Leaflet
-- *Animation:* Framer Motion
-- *Date Handling:* date-fns
-- *Icons:* React Icons
+- **Framework:** React 18
+- **Build Tool:** Vite
+- **Routing:** React Router DOM v6
+- **Styling:** TailwindCSS
+- **State Management:** React Context
+- **API Integration:** Axios
+- **Testing:** Jest + React Testing Library
+- **Data Visualization:** Recharts
+- **Maps:** React Leaflet
+- **Animation:** Framer Motion
+- **Date Handling:** date-fns
+- **Icons:** React Icons
 
 ## Prerequisites
 
@@ -136,35 +136,35 @@ A modern React-based frontend application for managing and monitoring agricultur
 
 1. Clone the repository:
 
-   bash
+   ```bash
    git clone https://github.com/Jwanjema/GreenFund-test-Frontend.git
    cd GreenFund-test-Frontend
-   
+   ```
 
 2. Install dependencies:
 
-   bash
+   ```bash
    npm install
-   
+   ```
 
 3. Start the development server:
-   bash
+   ```bash
    npm run dev
-   
+   ```
 
-The application will be available at http://localhost:5173 by default.
+The application will be available at `http://localhost:5173` by default.
 
 ## Available Scripts
 
-- npm run dev - Start development server
-- npm run build - Build for production
-- npm run preview - Preview production build
-- npm test - Run tests
-- npm run test:watch - Run tests in watch mode
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm test` - Run tests
+- `npm run test:watch` - Run tests in watch mode
 
 ## Project Structure
 
-
+```
 GreenFund-test-Frontend/
 ├── src/
 │   ├── assets/          # Static assets
@@ -180,11 +180,11 @@ GreenFund-test-Frontend/
 ├── tailwind.config.js  # TailwindCSS configuration
 ├── jest.config.js      # Jest configuration
 └── package.json        # Project dependencies
-
+```
 
 ## Testing
 
-The project uses Jest and React Testing Library for testing. Tests are located in the src/__tests__ directory.
+The project uses Jest and React Testing Library for testing. Tests are located in the `src/__tests__` directory.
 
 - Unit tests for components
 - Integration tests for pages
@@ -193,41 +193,41 @@ The project uses Jest and React Testing Library for testing. Tests are located i
 
 To run tests:
 
-bash
+```bash
 npm test          # Run all tests
 npm run test:watch   # Run tests in watch mode
-
+```
 
 ## Key Components
 
-1. *Dashboard*
+1. **Dashboard**
 
    - Overview of farm metrics
    - Activity feed
    - Statistics cards
    - Emissions charts
 
-2. *StatCard*
+2. **StatCard**
 
    - Reusable statistics display
    - Dynamic charts
    - Trend indicators
 
-3. *ActivityItem*
+3. **ActivityItem**
    - Activity feed items
    - Status indicators
    - Timestamp display
 
 ## API Integration
 
-The application uses Axios for API communication. API client configuration can be found in src/services/api.js.
+The application uses Axios for API communication. API client configuration can be found in `src/services/api.js`.
 
 Main endpoints:
 
-- /farms/ - Farm management
-- /badges/ - Achievement badges
-- /activities/ - User activities
-- /soil/ - Soil analysis data
+- `/farms/` - Farm management
+- `/badges/` - Achievement badges
+- `/activities/` - User activities
+- `/soil/` - Soil analysis data
 
 ## Styling
 
@@ -238,18 +238,18 @@ Main endpoints:
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch (git checkout -b feature/AmazingFeature)
-3. Commit your changes (git commit -m 'Add some AmazingFeature')
-4. Push to the branch (git push origin feature/AmazingFeature)
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
 ## Environment Variables
 
-Create a .env file in the root directory with the following variables:
+Create a `.env` file in the root directory with the following variables:
 
-env
+```env
 VITE_API_BASE_URL=your_api_base_url
-
+```
 
 ## Browser Support
 
@@ -260,4 +260,4 @@ VITE_API_BASE_URL=your_api_base_url
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.

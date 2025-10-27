@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiAward, FiLoader } from 'react-icons/fi';
-import apiClient from '../services/api'; // Check path
+import apiClient from '../services/api'; 
 
 function BadgeCard({ userBadge }) {
     return (
@@ -38,8 +38,8 @@ function BadgesPage() {
         const fetchBadges = async () => {
             setLoading(true);
             try {
-                // Fetch the list of *earned* badges
-                const response = await apiClient.get('/badges/me');
+                // FIX APPLIED HERE: Removing the extra '/api' since apiClient already points to the /api base URL.
+                const response = await apiClient.get('/badges/me'); 
                 setBadges(response.data);
             } catch (err) {
                 console.error("Failed to fetch badges:", err);
@@ -50,7 +50,7 @@ function BadgesPage() {
         };
 
         fetchBadges();
-    }, []); // Empty dependency array means this runs once on mount
+    }, []); 
 
     return (
         <motion.div

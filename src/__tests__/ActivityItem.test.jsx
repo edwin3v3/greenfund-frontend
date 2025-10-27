@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 // Extract ActivityItem component
 const ActivityItem = ({ icon, text, time, color }) => (
     <div className="flex items-center gap-4 py-3 border-b last:border-b-0">
-        <div className={w-10 h-10 rounded-full flex items-center justify-center text-xl ${color}}>
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xl ${color}`}>
             {icon}
         </div>
         <div>
@@ -46,5 +46,5 @@ describe('ActivityItem Component', () => {
     render(<ActivityItem {...defaultProps} text="Added new soil sample" time="just now" />);
     expect(screen.getByText('Added new soil sample')).toBeInTheDocument();
     expect(screen.getByText('just now')).toBeInTheDocument();
-  });
+  });
 });
