@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// ✅ Use environment variable in production, fallback to localhost for local dev
 const apiBaseUrl =
   import.meta.env.VITE_API_BASE_URL
     ? `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_API_BASE_URL_SUFFIX || ''}`
@@ -13,7 +12,6 @@ const apiClient = axios.create({
   },
 });
 
-// 🔐 Interceptor to add auth token to every request
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
