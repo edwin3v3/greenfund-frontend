@@ -1,18 +1,15 @@
-# Use a stable Node.js image
-FROM node:20-alpine
-
-# Set working directory
+# Stage 1: Build the app
+FROM node:20-alpine AS build
 WORKDIR /app
-
-# Copy package files and install dependencies in a clean environment
 COPY package*.json ./
 RUN npm install
-
-# Copy the rest of the application code
 COPY . .
+RUN npm run build
 
-# Expose the port Vite runs on
-EXPOSE 5173
+# Stage 2: Serve with nginx
+FROM nginx:alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# The default command to run the app
-CMD ["npm", "run", "dev"]
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
