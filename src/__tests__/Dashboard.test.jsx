@@ -213,6 +213,6 @@ describe('Dashboard Component', () => {
     // Then should show the activity
     await waitFor(() => {
       expect(screen.getByText(/Added new farm/i)).toBeInTheDocument();
-    });
-  });
+    });
+  });
 });
