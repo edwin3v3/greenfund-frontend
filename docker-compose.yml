@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build: .
+    ports:
+      - "5173:5173"
+    volumes:
+      # This links your local code to the container for live-reloading
+      - .:/app
+      # This prevents your local (empty) node_modules from overwriting the container's
+      - /app/node_modules
+    command: npm run dev -- --host
