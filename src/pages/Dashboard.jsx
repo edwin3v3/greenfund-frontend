@@ -7,6 +7,7 @@ import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts';
 import apiClient from '../services/api';
 import { formatDistanceToNow } from 'date-fns'; // Import for better date formatting
 
+// --- vvvv THIS COMPONENT IS UPDATED vvvv ---
 const StatCard = ({ title, value, trend, icon, chartData = [], colorClass }) => {
     const formattedChartData = chartData.map((val, index) => ({
         name: `Day ${index + 1}`,
@@ -45,12 +46,15 @@ const StatCard = ({ title, value, trend, icon, chartData = [], colorClass }) => 
                         </LineChart>
                     </ResponsiveContainer>
                 ) : (
-                    <div className="flex items-center justify-center h-full text-xs text-gray-400">No data</div>
+                    // THIS IS THE FIX:
+                    // We render 'null' (nothing) instead of the "No data" div.
+                    null
                 )}
             </div>
         </div>
     );
 };
+// --- ^^^^ END OF UPDATE ^^^^ ---
 
 const ActivityItem = ({ icon, text, time, color }) => (
     <div className="flex items-center gap-4 py-3 border-b last:border-b-0">
@@ -82,7 +86,6 @@ function Dashboard() {
       
       setIsLoading(true);
       
-      // We still need farms for the count
       let farmCount = 0; 
       let badgeCount = 0;
       let activities = [];
@@ -95,32 +98,35 @@ function Dashboard() {
             apiClient.get('/badges/me/count'),
             apiClient.get('/activities/emissions/weekly'),
             apiClient.get('/soil/suggestions/summary'),
-            apiClient.get('/activities/me/recent') // <-- 1. Call new endpoint
+            apiClient.get('/activities/me/recent')
         ]);
 
-        // Process farms
         if (farmsRes.status === 'fulfilled') {
             farmCount = farmsRes.value.data.length;
         } else { console.error("Failed farms fetch:", farmsRes.reason); }
 
-        // Process badges
         if (badgesRes.status === 'fulfilled') {
             badgeCount = badgesRes.value.data.count;
         } else { console.error("Failed badges fetch:", badgesRes.reason); }
 
-        // Process emissions
         if (emissionsRes.status === 'fulfilled') {
-            emissionsData = emissionsRes.value.data;
+            if (emissionsRes.value.data && emissionsRes.value.data.daily_emissions) {
+                emissionsData = emissionsRes.value.data;
+            } else {
+                 console.warn("Received unexpected emissions data:", emissionsRes.value.data);
+            }
         } else { console.error("Failed emissions fetch:", emissionsRes.reason); }
 
-        // Process suggestions
         if (suggestionsRes.status === 'fulfilled') {
-            suggestionsData = suggestionsRes.value.data;
+             if (suggestionsRes.value.data && suggestionsRes.value.data.unique_suggestion_count !== undefined) {
+                suggestionsData = suggestionsRes.value.data;
+             } else {
+                console.warn("Received unexpected suggestions data:", suggestionsRes.value.data);
+             }
         } else { console.error("Failed suggestions fetch:", suggestionsRes.reason); }
         
-        // --- 2. Process NEW recent activities ---
         if (activityRes.status === 'fulfilled') {
-            activities = activityRes.value.data; // This is now a global list
+            activities = activityRes.value.data;
         } else {
             console.error("Failed activities fetch:", activityRes.reason);
         }
@@ -142,20 +148,17 @@ function Dashboard() {
     fetchData();
   }, [user]); 
 
-   // --- 3. Update the activity feed to show better data ---
    const activitiesToShow = isLoading ? [] : recentActivities.length > 0 ? recentActivities.map(act => ({
       id: act.id,
       icon: '🚜',
       text: act.description || act.activity_type,
-      // Use formatDistanceToNow for "2 days ago", "1 hour ago" etc.
       time: `${formatDistanceToNow(new Date(act.date), { addSuffix: true })}`,
       color: 'bg-orange-100 text-orange-600'
    })) : [
      { id: 1, icon: '🤷', text: 'No recent activity.', time: 'Just now', color: 'bg-gray-100 text-gray-600' }
    ];
 
-   // Emissions Trend
-   const getEmissionsTrend = () => { /* ... */
+   const getEmissionsTrend = () => {
        if (isLoading) return "...";
        const daily = dashboardData.weeklyEmissions.daily_emissions || [];
        if (daily.length < 7) return "N/A";
@@ -166,8 +169,7 @@ function Dashboard() {
        return "Stable";
    };
 
-    // Suggestions Trend
-   const getSuggestionsTrend = () => { /* ... */
+   const getSuggestionsTrend = () => {
        if (isLoading) return "...";
        const count = dashboardData.cropSuggestions.unique_suggestion_count;
        if (count === 0) return "No suggestions yet";
@@ -198,13 +200,14 @@ function Dashboard() {
                 trend={isLoading ? '...' : `Tracking ${dashboardData.totalFarms} properties`}
                 icon={<FiMapPin />}
                 colorClass="bg-green-100 text-green-600"
+                chartData={[]} // No chart data
             />
             <StatCard
                 title="Weekly Emission"
                 value={isLoading ? '...' : `${dashboardData.weeklyEmissions.total_emissions_kg.toFixed(1)} kg`}
                 trend={getEmissionsTrend()}
                 icon={<FiBarChart />}
-                chartData={dashboardData.weeklyEmissions.daily_emissions}
+                chartData={dashboardData.weeklyEmissions.daily_emissions} // Has chart data
                 colorClass="bg-red-100 text-red-600"
             />
             <StatCard
@@ -212,7 +215,7 @@ function Dashboard() {
                 value={isLoading ? '...' : dashboardData.cropSuggestions.unique_suggestion_count}
                 trend={getSuggestionsTrend()}
                 icon={<FiCpu />}
-                chartData={[]}
+                chartData={[]} // No chart data
                 colorClass="bg-blue-100 text-blue-600"
             />
             <StatCard
@@ -220,6 +223,7 @@ function Dashboard() {
                 value={isLoading ? '...' : dashboardData.badgeCount}
                 trend={isLoading ? '...' : (dashboardData.badgeCount > 0 ? "Great job!" : "Start exploring")}
                 icon={<FiAward />}
+                chartData={[]} // No chart data
                 colorClass="bg-yellow-100 text-yellow-600"
             />
         </div>
