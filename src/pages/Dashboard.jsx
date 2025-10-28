@@ -2,20 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
-import { FiPlus, FiUpload, FiMapPin, FiBarChart, FiCpu, FiAward } from 'react-icons/fi';
+import { FiPlus, FiUpload, FiMapPin, FiBarChart, FiCpu, FiAward, FiCheckCircle, FiGitPullRequest } from 'react-icons/fi'; // Added icons
 import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts';
 import apiClient from '../services/api';
-import { formatDistanceToNow } from 'date-fns'; // Import for better date formatting
+import { formatDistanceToNow } from 'date-fns';
 
 // --- vvvv THIS COMPONENT IS UPDATED vvvv ---
-const StatCard = ({ title, value, trend, icon, chartData = [], colorClass }) => {
+const StatCard = ({ title, value, trend, icon, chartData = [], listData = [], colorClass }) => {
     const formattedChartData = chartData.map((val, index) => ({
         name: `Day ${index + 1}`,
         value: val
     }));
 
+    // Check if we should render a list instead of a chart
+    const shouldRenderList = chartData.length === 0 && listData.length > 0;
+    // Check if we should render the chart
+    const shouldRenderChart = chartData.length > 0;
+
     return (
         <div className="bg-surface p-6 rounded-xl shadow-md flex flex-col">
+            {/* Top section (no change) */}
             <div className="flex justify-between items-start mb-4">
                 <div>
                     <p className="text-sm text-text-secondary font-medium">{title}</p>
@@ -24,16 +30,18 @@ const StatCard = ({ title, value, trend, icon, chartData = [], colorClass }) => 
                 </div>
                 <div className={`text-2xl p-3 rounded-full ${colorClass}`}>{icon}</div>
             </div>
+
+            {/* Bottom section (Updated) */}
             <div className="h-16 w-full mt-auto">
-                {formattedChartData.length > 0 ? (
+                {shouldRenderChart && (
                     <ResponsiveContainer>
                         <LineChart data={formattedChartData} margin={{ top: 5, right: 10, left: -40, bottom: 5 }}>
-                             <Tooltip
+                            <Tooltip
                                 contentStyle={{ backgroundColor: '#ffffffcc', border: 'none', borderRadius: '4px', fontSize: '12px' }}
                                 labelStyle={{ display: 'none' }}
                                 formatter={(value, name, props) => {
-                                     if (title.includes("Emission")) return [`${value.toFixed(1)} kg CO2e`, null];
-                                     return [`${value}`, null];
+                                    if (title.includes("Emission")) return [`${value.toFixed(1)} kg CO2e`, null];
+                                    return [`${value}`, null];
                                 }}
                             />
                             <Line
@@ -45,11 +53,23 @@ const StatCard = ({ title, value, trend, icon, chartData = [], colorClass }) => 
                             />
                         </LineChart>
                     </ResponsiveContainer>
-                ) : (
-                    // THIS IS THE FIX:
-                    // We render 'null' (nothing) instead of the "No data" div.
-                    null
                 )}
+                
+                {shouldRenderList && (
+                    <div className="space-y-1 overflow-y-auto h-full">
+                        {listData.slice(0, 3).map((item, index) => ( // Show top 3
+                            <div key={index} className="flex items-center gap-2 text-xs text-text-secondary">
+                                {title.includes("Farms") && <FiGitPullRequest className="text-green-500" />}
+                                {title.includes("Suggestions") && <FiCheckCircle className="text-blue-500" />}
+                                {title.includes("Badges") && <FiAward className="text-yellow-500" />}
+                                <span>{item}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* If no chart AND no list, this renders nothing */}
+                {!shouldRenderChart && !shouldRenderList && null}
             </div>
         </div>
     );
@@ -78,6 +98,12 @@ function Dashboard() {
       cropSuggestions: { unique_suggestion_count: 0, recent_suggestions: [] }
   });
   const [recentActivities, setRecentActivities] = useState([]);
+  
+  // --- vvvv NEW STATE FOR LISTS vvvv ---
+  const [recentFarms, setRecentFarms] = useState([]);
+  const [recentBadges, setRecentBadges] = useState([]);
+  // --- ^^^^ END NEW STATE ^^^^ ---
+
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
@@ -87,49 +113,59 @@ function Dashboard() {
       setIsLoading(true);
       
       let farmCount = 0; 
+      let farmList = []; // <-- To store farm names
       let badgeCount = 0;
+      let badgeList = []; // <-- To store badge names
       let activities = [];
       let emissionsData = { total_emissions_kg: 0, daily_emissions: [] };
       let suggestionsData = { unique_suggestion_count: 0, recent_suggestions: [] };
 
       try {
-        const [farmsRes, badgesRes, emissionsRes, suggestionsRes, activityRes] = await Promise.allSettled([
+        const [farmsRes, badgesCountRes, emissionsRes, suggestionsRes, activityRes, recentBadgesRes] = await Promise.allSettled([
             apiClient.get('/farms/'),
             apiClient.get('/badges/me/count'),
             apiClient.get('/activities/emissions/weekly'),
             apiClient.get('/soil/suggestions/summary'),
-            apiClient.get('/activities/me/recent')
+            apiClient.get('/activities/me/recent'),
+            apiClient.get('/badges/me') // <-- Fetch the list of earned badges
         ]);
 
+        // Process farms
         if (farmsRes.status === 'fulfilled') {
             farmCount = farmsRes.value.data.length;
+            // Get names of last 3 farms
+            farmList = farmsRes.value.data.map(farm => farm.name).slice(0, 3);
         } else { console.error("Failed farms fetch:", farmsRes.reason); }
 
-        if (badgesRes.status === 'fulfilled') {
-            badgeCount = badgesRes.value.data.count;
-        } else { console.error("Failed badges fetch:", badgesRes.reason); }
+        // Process badge count
+        if (badgesCountRes.status === 'fulfilled') {
+            badgeCount = badgesCountRes.value.data.count;
+        } else { console.error("Failed badges fetch:", badgesCountRes.reason); }
 
+        // Process recent badges list
+        if (recentBadgesRes.status === 'fulfilled') {
+            // Get names of last 3 badges
+            badgeList = recentBadgesRes.value.data.map(userBadge => userBadge.badge.name).slice(0, 3);
+        } else { console.error("Failed recent badges fetch:", recentBadgesRes.reason); }
+
+        // Process emissions
         if (emissionsRes.status === 'fulfilled') {
             if (emissionsRes.value.data && emissionsRes.value.data.daily_emissions) {
                 emissionsData = emissionsRes.value.data;
-            } else {
-                 console.warn("Received unexpected emissions data:", emissionsRes.value.data);
-            }
+            } else { console.warn("Received unexpected emissions data:", emissionsRes.value.data); }
         } else { console.error("Failed emissions fetch:", emissionsRes.reason); }
 
+        // Process suggestions
         if (suggestionsRes.status === 'fulfilled') {
              if (suggestionsRes.value.data && suggestionsRes.value.data.unique_suggestion_count !== undefined) {
                 suggestionsData = suggestionsRes.value.data;
-             } else {
-                console.warn("Received unexpected suggestions data:", suggestionsRes.value.data);
-             }
+             } else { console.warn("Received unexpected suggestions data:", suggestionsRes.value.data); }
         } else { console.error("Failed suggestions fetch:", suggestionsRes.reason); }
         
+        // Process activities
         if (activityRes.status === 'fulfilled') {
             activities = activityRes.value.data;
-        } else {
-            console.error("Failed activities fetch:", activityRes.reason);
-        }
+        } else { console.error("Failed activities fetch:", activityRes.reason); }
 
       } catch (error) {
         console.error("Unexpected error fetching dashboard data:", error);
@@ -141,6 +177,10 @@ function Dashboard() {
             cropSuggestions: suggestionsData
         });
         setRecentActivities(activities);
+        // --- vvvv SET NEW LIST STATE vvvv ---
+        setRecentFarms(farmList);
+        setRecentBadges(badgeList);
+        // --- ^^^^ END SET NEW LIST STATE ^^^^ ---
         setIsLoading(false);
       }
     };
@@ -200,7 +240,7 @@ function Dashboard() {
                 trend={isLoading ? '...' : `Tracking ${dashboardData.totalFarms} properties`}
                 icon={<FiMapPin />}
                 colorClass="bg-green-100 text-green-600"
-                chartData={[]} // No chart data
+                listData={recentFarms} // <-- Pass farm list
             />
             <StatCard
                 title="Weekly Emission"
@@ -215,7 +255,7 @@ function Dashboard() {
                 value={isLoading ? '...' : dashboardData.cropSuggestions.unique_suggestion_count}
                 trend={getSuggestionsTrend()}
                 icon={<FiCpu />}
-                chartData={[]} // No chart data
+                listData={dashboardData.cropSuggestions.recent_suggestions} // <-- Pass suggestion list
                 colorClass="bg-blue-100 text-blue-600"
             />
             <StatCard
@@ -223,7 +263,7 @@ function Dashboard() {
                 value={isLoading ? '...' : dashboardData.badgeCount}
                 trend={isLoading ? '...' : (dashboardData.badgeCount > 0 ? "Great job!" : "Start exploring")}
                 icon={<FiAward />}
-                chartData={[]} // No chart data
+                listData={recentBadges} // <-- Pass badge list
                 colorClass="bg-yellow-100 text-yellow-600"
             />
         </div>
