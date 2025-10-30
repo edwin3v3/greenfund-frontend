@@ -121,7 +121,7 @@ A modern React-based frontend application for managing and monitoring agricultur
   <img src="./public/screenshots/gf-landing-page-screenshot.jpg" alt="Dashboard Screenshot" width="60%">
 </p>
 
-| **Farmer's Dashboard** | **Farms** |
+| **Farmer's Dashboard**  | **Farms** (Card & Map View of Farmer's farms) |
 |--------------------------|--------------------|
 | <img src="./public/screenshots/gf-dashboard-screenshot.jpg" alt="Dashboard Overview" width="87%"/> | <img src="./public/screenshots/gf-farms-screenshot.jpg" alt="Farm Analytics" width="97%"/> |
 
