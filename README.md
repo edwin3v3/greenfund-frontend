@@ -115,7 +115,7 @@ A modern React-based frontend application for managing and monitoring agricultur
   - Visual data summaries
   - Historical comparisons
 
-## Screenshots of GreenFund App
+## Key Screenshots of GreenFund App
 ### Landing Page
 <p align="center">
   <img src="./public/screenshots/gf-landing-page-screenshot.jpg" alt="Dashboard Screenshot" width="60%">
