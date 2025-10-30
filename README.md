@@ -1,7 +1,7 @@
 # GreenFund Frontend
 
 ## Authors
-Joan Rotich, Joe Wanjema and Edwin MWaniki
+[Joan Rotich](https://github.com/joan-pookie), [Joe Wanjema](https://github.com/Jwanjema) and [Edwin Mwaniki](https://github.com/edwin3v3/)
 
 A modern React-based frontend application for managing and monitoring agricultural sustainability metrics. This application provides farmers with tools to track their farms, monitor emissions, receive AI-powered crop suggestions, and earn badges for sustainable practices.
 
